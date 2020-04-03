@@ -120,6 +120,11 @@ class SignUpController: UIViewController {
             
             Database.database().reference().child("users").child(uid).updateChildValues(values, withCompletionBlock: {(error, ref) in
                 print("Successfully registered user and saved data..")
+                
+                guard let controller = UIApplication.shared.keyWindow?.rootViewController as? HomeController else { return }
+                controller.configureUI()
+
+                self.dismiss(animated: true, completion: nil)
             })
         }
     }

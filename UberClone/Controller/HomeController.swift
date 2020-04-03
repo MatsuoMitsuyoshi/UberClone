@@ -8,10 +8,13 @@
 
 import UIKit
 import Firebase
+import MapKit
 
 class HomeController: UIViewController {
     
     // MARK: - Properties
+    
+    private let mapView = MKMapView()
 
     // MARK: - Lifecycle
     
@@ -34,6 +37,7 @@ class HomeController: UIViewController {
             }
         } else {
             print("DEBUG: User id is \(Auth.auth().currentUser?.uid)")
+            configureUI()
         }
     }
     
@@ -45,7 +49,14 @@ class HomeController: UIViewController {
         }
     }
     
-    // MARK: -
+    // MARK: - Helper Functions
+    
+    func configureUI(){
+        view.addSubview(mapView)
+        mapView.frame = view.frame
+    }
+    
+    
     // MARK: -
     // MARK: -
     // MARK: -
