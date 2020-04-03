@@ -92,8 +92,8 @@ class SignUpController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureUI()
+        view.backgroundColor = .black
     }
     
     
