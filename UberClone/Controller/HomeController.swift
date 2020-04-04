@@ -23,9 +23,8 @@ class HomeController: UIViewController {
     private let locationInputView = LocationInputView()
     private let tableView = UITableView()
     
-    private var fullname: String? {
-//        didSet { print("DEBUG: Did set fullname..")}
-        didSet { locationInputView.titleLabel.text = fullname }
+    private var user: User? {
+        didSet { locationInputView.user = user }
     }
     
     private final let locationInputViewHeight: CGFloat = 200
@@ -43,9 +42,8 @@ class HomeController: UIViewController {
     // MARK: - API
     
     func fetchUserData(){
-        Service.shared.fetchUserData { fullname in
-            print("DEBUG: Fullname in controller is \(fullname)")
-            self.fullname = fullname
+        Service.shared.fetchUserData { user in
+            self.user = user
         }
     }
     
