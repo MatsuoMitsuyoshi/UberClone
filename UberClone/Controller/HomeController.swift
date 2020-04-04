@@ -23,6 +23,11 @@ class HomeController: UIViewController {
     private let locationInputView = LocationInputView()
     private let tableView = UITableView()
     
+    private var fullname: String? {
+//        didSet { print("DEBUG: Did set fullname..")}
+        didSet { locationInputView.titleLabel.text = fullname }
+    }
+    
     private final let locationInputViewHeight: CGFloat = 200
 
     // MARK: - Lifecycle
@@ -38,19 +43,20 @@ class HomeController: UIViewController {
     // MARK: - API
     
     func fetchUserData(){
-        Service.shared.fetchUserData()
+        Service.shared.fetchUserData { fullname in
+            print("DEBUG: Fullname in controller is \(fullname)")
+            self.fullname = fullname
+        }
     }
     
     func checkIfUserIsLoggedIn(){
         if Auth.auth().currentUser?.uid == nil {
-            print("DEBUG: User not logged in..")
             DispatchQueue.main.async {
                 let nav = UINavigationController(rootViewController: LoginController())
                 nav.modalPresentationStyle = .fullScreen
                 self.present(nav, animated: true, completion: nil)
             }
         } else {
-            print("DEBUG: User id is \(Auth.auth().currentUser?.uid)")
             configureUI()
         }
     }
@@ -99,7 +105,6 @@ class HomeController: UIViewController {
         UIView.animate(withDuration: 0.5, animations: {
             self.locationInputView.alpha = 1
         }) { _ in
-            print("DEBUT: Present table view..")
             UIView.animate(withDuration: 0.3, animations: {
                 self.tableView.frame.origin.y = self.locationInputViewHeight
             })
@@ -157,7 +162,6 @@ extension HomeController: CLLocationManagerDelegate {
 
 extension HomeController: LocationInputActivationViewDelegate {
     func presentLocationInputView() {
-        print("DEBUG: Handle present location input view..")
         inputActivationView.alpha = 0
         configureLocationInputView()
     }
@@ -167,8 +171,6 @@ extension HomeController: LocationInputActivationViewDelegate {
 
 extension HomeController: LocationInputViewDelegate {
     func dismissLocationInputView() {
-        print("DEBUG: 123")
-        
         UIView.animate(withDuration: 0.3, animations: {
             self.locationInputView.alpha = 0
             self.tableView.frame.origin.y = self.view.frame.height
