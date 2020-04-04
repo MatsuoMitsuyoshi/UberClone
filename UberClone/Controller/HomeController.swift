@@ -11,6 +11,7 @@ import Firebase
 import MapKit
 
 private let reuseIdentifier = "LocationCell"
+private let annotationIdentifier = "DriverAnnotation"
 
 class HomeController: UIViewController {
     
@@ -111,6 +112,7 @@ class HomeController: UIViewController {
         
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .follow
+        mapView.delegate = self
     }
     
     func configureLocationInputView() {
@@ -143,6 +145,38 @@ class HomeController: UIViewController {
     }
 }
 
+// MARK: - MKMapViewDelegate
+
+extension HomeController: MKMapViewDelegate {
+//    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+//        guard let user = self.user else { return }
+//        guard user.accountType == .driver else { return }
+//        guard let location = userLocation.location else { return }
+//        DriverService.shared.updateDriverLocation(location: location)
+//    }
+//
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if let annotation = annotation as? DriverAnnotation {
+            let view = MKAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            view.image = #imageLiteral(resourceName: "chevron-sign-to-right")
+            return view
+        }
+
+        return nil
+    }
+//
+//    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+//        if let route = self.route {
+//            let polyline = route.polyline
+//            let lineRenderer = MKPolylineRenderer(overlay: polyline)
+//            lineRenderer.strokeColor = .mainBlueTint
+//            lineRenderer.lineWidth = 4
+//            return lineRenderer
+//        }
+//        return MKOverlayRenderer()
+//    }
+}
+
 // MARK: - LocationServices
 
 extension HomeController {
@@ -165,38 +199,6 @@ extension HomeController {
         }
     }
 }
-
-// MARK: - MKMapViewDelegate
-
-//extension HomeController: MKMapViewDelegate {
-//    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
-//        guard let user = self.user else { return }
-//        guard user.accountType == .driver else { return }
-//        guard let location = userLocation.location else { return }
-//        DriverService.shared.updateDriverLocation(location: location)
-//    }
-//
-//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-//        if let annotation = annotation as? DriverAnnotation {
-//            let view = MKAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
-//            view.image = #imageLiteral(resourceName: "chevron-sign-to-right")
-//            return view
-//        }
-//        
-//        return nil
-//    }
-//
-//    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
-//        if let route = self.route {
-//            let polyline = route.polyline
-//            let lineRenderer = MKPolylineRenderer(overlay: polyline)
-//            lineRenderer.strokeColor = .mainBlueTint
-//            lineRenderer.lineWidth = 4
-//            return lineRenderer
-//        }
-//        return MKOverlayRenderer()
-//    }
-//}
 
 
 // MARK: - LocationInputActivationViewDelegate
