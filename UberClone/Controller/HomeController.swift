@@ -51,9 +51,13 @@ class HomeController: UIViewController {
     
     func fetchDrivers(){
         guard let location = locationManager?.location else { return }
-        Service.shared.fetchDrivers(location: location){(user) in
-            print("DEBUG: Driver is \(user.fullname)")
-            print("DEBUG: Driver is \(user.location)")
+        Service.shared.fetchDrivers(location: location){(driver) in
+//            print("DEBUG: Driver is \(driver.fullname)")
+//            print("DEBUG: Driver is \(driver.location)")
+            guard let coordinate = driver.location?.coordinate else { return }
+            let annotation = DriverAnnotation(uid: driver.uid, coordinate: coordinate)
+            
+            self.mapView.addAnnotation(annotation)
         }
     }
     
@@ -161,6 +165,39 @@ extension HomeController {
         }
     }
 }
+
+// MARK: - MKMapViewDelegate
+
+//extension HomeController: MKMapViewDelegate {
+//    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+//        guard let user = self.user else { return }
+//        guard user.accountType == .driver else { return }
+//        guard let location = userLocation.location else { return }
+//        DriverService.shared.updateDriverLocation(location: location)
+//    }
+//
+//    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+//        if let annotation = annotation as? DriverAnnotation {
+//            let view = MKAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+//            view.image = #imageLiteral(resourceName: "chevron-sign-to-right")
+//            return view
+//        }
+//        
+//        return nil
+//    }
+//
+//    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+//        if let route = self.route {
+//            let polyline = route.polyline
+//            let lineRenderer = MKPolylineRenderer(overlay: polyline)
+//            lineRenderer.strokeColor = .mainBlueTint
+//            lineRenderer.lineWidth = 4
+//            return lineRenderer
+//        }
+//        return MKOverlayRenderer()
+//    }
+//}
+
 
 // MARK: - LocationInputActivationViewDelegate
 
