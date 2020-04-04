@@ -17,7 +17,6 @@ class HomeController: UIViewController {
     // MARK: - Properties
     
     private let mapView = MKMapView()
-//    private let locationManager = CLLocationManager()
     private let locationManager = LocationHandler.shared.locationManager
 
     private let inputActivationView = LocationInputActivationView()
@@ -37,14 +36,24 @@ class HomeController: UIViewController {
         checkIfUserIsLoggedIn()
         enableLocationServices()
         fetchUserData()
-        signOut()
+        fetchDrivers()
+//        signOut()
     }
     
     // MARK: - API
     
     func fetchUserData(){
-        Service.shared.fetchUserData { user in
+        guard let currentUid = Auth.auth().currentUser?.uid else { return }
+        Service.shared.fetchUserData(uid: currentUid) { user in
             self.user = user
+        }
+    }
+    
+    func fetchDrivers(){
+        guard let location = locationManager?.location else { return }
+        Service.shared.fetchDrivers(location: location){(user) in
+            print("DEBUG: Driver is \(user.fullname)")
+            print("DEBUG: Driver is \(user.location)")
         }
     }
     
