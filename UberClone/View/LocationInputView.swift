@@ -10,6 +10,7 @@ import UIKit
 
 protocol LocationInputViewDelegate: class {
     func dismissLocationInputView()
+    func executeSearch(query: String)
 }
 
 class LocationInputView: UIView {
@@ -76,12 +77,14 @@ class LocationInputView: UIView {
         tf.backgroundColor = UIColor.rgb(red: 215, green: 215, blue: 215)
         tf.returnKeyType = .search
         tf.font = UIFont.systemFont(ofSize: 14)
+
+        tf.delegate = self
+//        tf.clearButtonMode = .whileEditing
+
         let paddingView = UIView()
         paddingView.setDimensions(height: 30, width: 8)
         tf.leftView = paddingView
         tf.leftViewMode = .always
-//        tf.delegate = self
-//        tf.clearButtonMode = .whileEditing
         return tf
     }()
 
@@ -133,5 +136,16 @@ class LocationInputView: UIView {
     @objc func handleBackTapped() {
         print("DEBUG: Handle back..")
         delegate?.dismissLocationInputView()
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension LocationInputView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard let query = textField.text else { return false }
+//        print("DEBUG: Query text is \(query)")
+        delegate?.executeSearch(query: query)
+        return true
     }
 }

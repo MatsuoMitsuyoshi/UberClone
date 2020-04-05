@@ -23,7 +23,8 @@ class HomeController: UIViewController {
     private let inputActivationView = LocationInputActivationView()
     private let locationInputView = LocationInputView()
     private let tableView = UITableView()
-    
+    private var searchResults = [MKPlacemark]()
+
     private var user: User? {
         didSet { locationInputView.user = user }
     }
@@ -164,6 +165,30 @@ class HomeController: UIViewController {
     }
 }
 
+// MARK: - MapView Helper Functions
+
+private extension HomeController {
+    func searchBy(naturalLanguageQuery: String, completion: @escaping([MKPlacemark]) -> Void) {
+        var results = [MKPlacemark]()
+
+        let request = MKLocalSearch.Request()
+        request.region = mapView.region
+        request.naturalLanguageQuery = naturalLanguageQuery
+
+        let search = MKLocalSearch(request: request)
+        search.start { (response, error) in
+            guard let response = response else { return }
+
+            response.mapItems.forEach({ item in
+                print("DEBUG: Item is \(item.name)")
+                results.append(item.placemark)
+            })
+
+            completion(results)
+        }
+    }
+}
+
 // MARK: - MKMapViewDelegate
 
 extension HomeController: MKMapViewDelegate {
@@ -229,9 +254,18 @@ extension HomeController: LocationInputActivationViewDelegate {
     }
 }
 
-// MARK: - LocationInputActivationViewDelegate
+// MARK: - LocationInputViewDelegate
 
 extension HomeController: LocationInputViewDelegate {
+    func executeSearch(query: String) {
+        print("DEBUG: Query text is \(query)")
+        searchBy(naturalLanguageQuery: query) { (results) in
+            print("DEBUG: Placemark is \(results)")
+            self.searchResults = results
+            self.tableView.reloadData()
+        }
+    }
+    
     func dismissLocationInputView() {
         UIView.animate(withDuration: 0.3, animations: {
             self.locationInputView.alpha = 0
@@ -255,7 +289,7 @@ extension HomeController: UITableViewDelegate, UITableViewDataSource {
         return 2
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? 2 : 5
+        return section == 0 ? 2 : searchResults.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
