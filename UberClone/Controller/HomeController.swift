@@ -46,12 +46,18 @@ class HomeController: UIViewController {
             locationInputView.user = user
             if user?.accountType == .passenger {
                 fetchDrivers()
-                
                 configureLocationInputActivationView()
-                
             } else {
                 print("DEBUG: User is driver..")
+//                Service.shared.observeTrips()
+                observeTrips()
             }
+        }
+    }
+    
+    private var trip: Trip? {
+        didSet {
+            print("DEBUG: Show pickup passenger controller..")
         }
     }
     
@@ -89,7 +95,6 @@ class HomeController: UIViewController {
                 self.configureActionButton(config: .showMenu)
                 self.animateRideActionView(shouldShow: false)
             }
-            
         }
     }
 
@@ -127,6 +132,12 @@ class HomeController: UIViewController {
             if !driverIsVisible {
                 self.mapView.addAnnotation(annotation)
             }
+        }
+    }
+    
+    func observeTrips(){
+        Service.shared.observeTrips { trip in
+            self.trip = trip
         }
     }
     
