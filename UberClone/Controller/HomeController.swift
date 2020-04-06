@@ -68,11 +68,13 @@ class HomeController: UIViewController {
             print("DEBUG: Handle dismissal..")
             
             removeAnnotationsAndOverlays()
-            
+            mapView.showAnnotations(mapView.annotations, animated: true)
+
             UIView.animate(withDuration: 0.3) {
                 self.inputActivationView.alpha = 1
                 self.configureActionButton(config: .showMenu)
             }
+            
         }
     }
 
@@ -346,15 +348,6 @@ extension HomeController: LocationInputViewDelegate {
                 self.inputActivationView.alpha = 1
             })
         }
-//        UIView.animate(withDuration: 0.3, animations: {
-//            self.locationInputView.alpha = 0
-//            self.tableView.frame.origin.y = self.view.frame.height
-//        }) { _ in
-//            self.locationInputView.removeFromSuperview()
-//            UIView.animate(withDuration: 0.3, animations: {
-//                self.inputActivationView.alpha = 1
-//            })
-//        }
     }
 }
 
@@ -393,6 +386,10 @@ extension HomeController: UITableViewDelegate, UITableViewDataSource {
             annotation.coordinate = selectedPlacemark.coordinate
             self.mapView.addAnnotation(annotation)
             self.mapView.selectAnnotation(annotation, animated: true)
+            
+            let annotations = self.mapView.annotations.filter({ !$0.isKind(of: DriverAnnotation.self)})
+            
+            self.mapView.showAnnotations(annotations, animated: true)
         }
     }
 }
