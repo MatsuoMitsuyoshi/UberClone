@@ -47,6 +47,9 @@ class HomeController: UIViewController {
             if user?.accountType == .passenger {
                 fetchDrivers()
                 configureLocationInputActivationView()
+                
+                observeCurrentTrip()
+                
             } else {
                 observeTrips()
             }
@@ -55,11 +58,17 @@ class HomeController: UIViewController {
     
     private var trip: Trip? {
         didSet {
-            guard let trip = trip else { return }
-            let controller = PickupController(trip: trip)
-            controller.delegate = self
-            controller.modalPresentationStyle = .fullScreen
-            self.present(controller, animated: true, completion: nil)
+            guard let user = user else { return }
+            
+            if user.accountType == .driver {
+                guard let trip = trip else { return }
+                let controller = PickupController(trip: trip)
+                controller.delegate = self
+                controller.modalPresentationStyle = .fullScreen
+                self.present(controller, animated: true, completion: nil)
+            } else {
+                print("DEBUG: Show ride action view for accepted trip..")
+            }
         }
     }
     
@@ -106,6 +115,17 @@ class HomeController: UIViewController {
     }
 
     // MARK: - API
+    
+    func observeCurrentTrip(){
+        Service.shared.observeCurrentTrip{ trip in
+            self.trip = trip
+            
+            if trip.state == .accepted {
+                print("DEBUG: Trip was accepted..")
+                self.shouldPresentLodingView(false)
+            }
+        }
+    }
     
     func fetchUserData(){
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
@@ -481,9 +501,20 @@ extension HomeController: RideActionViewDelegate {
 }
 
 // MARK: - PickupControllerDelegate
+
 extension HomeController: PickupControllerDelegate {
     func didAcceptTrip(_ trip: Trip) {
-        self.trip?.state = .accepted
+//        self.trip?.state = .accepted
+        let anno = MKPointAnnotation()
+        anno.coordinate = trip.pickupCoordinates
+        mapView.addAnnotation(anno)
+        
+        let placemark = MKPlacemark(coordinate: trip.pickupCoordinates)
+        let mapItem = MKMapItem(placemark: placemark)
+        generatePolyline(toDestination: mapItem)
+        
+        mapView.zoomToFit(annotations: mapView.annotations)
+        
         self.dismiss(animated: true, completion: nil)
     }
 }

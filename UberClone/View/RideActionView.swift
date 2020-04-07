@@ -16,6 +16,41 @@ protocol RideActionViewDelegate: class {
 //    func dropOffPassenger()
 }
 
+enum RideActionViewConfiguration {
+    case requestRide
+    case tripAccepted
+//    case driverArrived
+    case pickupPassenger
+    case tripInProgress
+    case endTrip
+    
+    init() {
+        self = .requestRide
+    }
+}
+
+enum ButtonAction: CustomStringConvertible {
+    case requestRide
+    case cancel
+    case getDirections
+    case pickup
+    case dropOff
+    
+    var description: String {
+        switch self {
+        case .requestRide: return "CONFIRM UBERX"
+        case .cancel: return "CANCEL RIDE"
+        case .getDirections: return "GET DIRECTIONS"
+        case .pickup: return "PICKUP PASSENGER"
+        case .dropOff: return "DROP OFF PASSENGER"
+        }
+    }
+    
+    init() {
+        self = .requestRide
+    }
+}
+
 class RideActionView: UIView {
 
     // MARK: - Properties
@@ -27,6 +62,9 @@ class RideActionView: UIView {
         }
     }
 
+    var config = RideActionViewConfiguration()
+    var buttonAction = ButtonAction()
+    
     weak var delegate: RideActionViewDelegate?
 
     private let titleLabel: UILabel = {
@@ -136,5 +174,11 @@ class RideActionView: UIView {
     @objc func actionButtonPressed() {
         print("DEBUG: 123")
         delegate?.uploadTrip(self)
+    }
+
+    // MARK: - Helper Functions
+    
+    func configureUI(withConfig config: RideActionViewConfiguration){
+        
     }
 }
