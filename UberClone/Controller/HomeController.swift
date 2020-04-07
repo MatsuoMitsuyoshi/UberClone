@@ -5,7 +5,6 @@
 //  Created by mitsuyoshi matsuo on 2020/04/03.
 //  Copyright © 2020 mitsuyoshi matsuo. All rights reserved.
 //
-
 import UIKit
 import Firebase
 import MapKit
@@ -288,22 +287,24 @@ class HomeController: UIViewController {
         }, completion: completion)
     }
     
-    func animateRideActionView(shouldShow: Bool, destination: MKPlacemark? = nil) {
+    func animateRideActionView(shouldShow: Bool, destination: MKPlacemark? = nil, config: RideActionViewConfiguration? = nil) {
         let yOrigin = shouldShow ? self.view.frame.height - self.rideActionViewHeight : self.view.frame.height
-        
-        if shouldShow {
-            guard let destination = destination else { return }
-            rideActionView.destination = destination
-        }
-        
+
         UIView.animate(withDuration: 0.3) {
             self.rideActionView.frame.origin.y = yOrigin
+        }
+
+        if shouldShow {
+            guard let config = config else { return }
+            rideActionView.configureUI(withConfig: config)
+
+            guard let destination = destination else { return }
+            rideActionView.destination = destination
         }
     }
 }
 
 // MARK: - MapView Helper Functions
-
 private extension HomeController {
     func searchBy(naturalLanguageQuery: String, completion: @escaping([MKPlacemark]) -> Void) {
         var results = [MKPlacemark]()
@@ -354,7 +355,6 @@ private extension HomeController {
 }
 
 // MARK: - MKMapViewDelegate
-
 extension HomeController: MKMapViewDelegate {
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -515,6 +515,8 @@ extension HomeController: PickupControllerDelegate {
         
         mapView.zoomToFit(annotations: mapView.annotations)
         
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true){
+            self.animateRideActionView(shouldShow: true, config: .tripAccepted)
+        }
     }
 }
