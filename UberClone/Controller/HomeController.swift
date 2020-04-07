@@ -48,8 +48,6 @@ class HomeController: UIViewController {
                 fetchDrivers()
                 configureLocationInputActivationView()
             } else {
-                print("DEBUG: User is driver..")
-//                Service.shared.observeTrips()
                 observeTrips()
             }
         }
@@ -58,6 +56,10 @@ class HomeController: UIViewController {
     private var trip: Trip? {
         didSet {
             print("DEBUG: Show pickup passenger controller..")
+            guard let trip = trip else { return }
+            let controller = PickupController(trip: trip)
+            controller.modalPresentationStyle = .fullScreen
+            self.present(controller, animated: true, completion: nil)
         }
     }
     
