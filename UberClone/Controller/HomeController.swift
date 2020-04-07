@@ -464,11 +464,18 @@ extension HomeController: RideActionViewDelegate {
     func uploadTrip(_ view: RideActionView) {
         guard let pickupCoordinates = locationManager?.location?.coordinate else { return }
         guard let destinationCoordinates = view.destination?.coordinate else { return }
+        
+        shouldPresentLodingView(true, message: "Finding you a ride..")
+        
         Service.shared.uploadTrip(pickupCoordinates, destinationCoordinates) {(err, ref) in
             if let error = err {
                 print("DEBUG: Failed to upload trip with error \(error)")
+                return
             }
             print("DEBUG: Did upload trip successfully")
+            UIView.animate(withDuration: 0.3, animations: {
+                self.rideActionView.frame.origin.y = self.view.frame.height
+            })
         }
     }
 }
