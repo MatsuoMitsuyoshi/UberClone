@@ -55,9 +55,9 @@ class HomeController: UIViewController {
     
     private var trip: Trip? {
         didSet {
-            print("DEBUG: Show pickup passenger controller..")
             guard let trip = trip else { return }
             let controller = PickupController(trip: trip)
+            controller.delegate = self
             controller.modalPresentationStyle = .fullScreen
             self.present(controller, animated: true, completion: nil)
         }
@@ -77,6 +77,11 @@ class HomeController: UIViewController {
         checkIfUserIsLoggedIn()
         enableLocationServices()
 //        signOut()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        guard let trip = trip else { return }
+        print("DEBUG: Trip state is \(trip.state)")
     }
     
     // MARK: - Selectors
@@ -465,5 +470,13 @@ extension HomeController: RideActionViewDelegate {
             }
             print("DEBUG: Did upload trip successfully")
         }
+    }
+}
+
+// MARK: - PickupControllerDelegate
+extension HomeController: PickupControllerDelegate {
+    func didAcceptTrip(_ trip: Trip) {
+        self.trip?.state = .accepted
+        self.dismiss(animated: true, completion: nil)
     }
 }
