@@ -1,5 +1,5 @@
 //
-//  Extentions.swift
+//  Extensions.swift
 //  UberClone
 //
 //  Created by mitsuyoshi matsuo on 2020/03/22.
@@ -167,6 +167,13 @@ extension MKMapView {
 }
 
 extension UIViewController {
+    
+    func presentAlertController(withTitle title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
     func shouldPresentLodingView(_ present: Bool, message: String? = nil){
         if present {
             let loadingView = UIView()
