@@ -63,13 +63,13 @@ class RideActionView: UIView {
 
     var config = RideActionViewConfiguration()
     var buttonAction = ButtonAction()
-    
     weak var delegate: RideActionViewDelegate?
+    
+    var user: User?
 
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
-//        label.text = "Test Address Title"
         label.textAlignment = .center
         return label
     }()
@@ -78,7 +78,6 @@ class RideActionView: UIView {
         let label = UILabel()
         label.textColor = .lightGray
         label.font = UIFont.systemFont(ofSize: 16)
-//        label.text = "123 M St, NW Washington DC"
         label.textAlignment = .center
         return label
     }()
@@ -180,11 +179,20 @@ class RideActionView: UIView {
     func configureUI(withConfig config: RideActionViewConfiguration) {
         switch config {
         case .requestRide:
-            break
-        case .tripAccepted:
-            titleLabel.text = "En Route To Passenger"
-            buttonAction = .getDirections
+            buttonAction = .requestRide
             actionButton.setTitle(buttonAction.description, for: .normal)
+        case .tripAccepted:
+            guard let user = user else { return }
+            
+            if user.accountType == .passenger {
+                titleLabel.text = "En Route To Passenger"
+                buttonAction = .getDirections
+                actionButton.setTitle(buttonAction.description, for: .normal)
+            } else {
+                buttonAction = .cancel
+                actionButton.setTitle(buttonAction.description, for: .normal)
+                titleLabel.text = "Driver En Route"
+            }
         case .pickupPassenger:
             break
         case .tripInProgress:
