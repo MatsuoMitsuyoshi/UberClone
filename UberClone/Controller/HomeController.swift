@@ -374,6 +374,14 @@ private extension HomeController {
 
 // MARK: - MKMapViewDelegate
 extension HomeController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
+        print("DEBUG: Did update user location..")
+        guard let user = self.user else { return }
+        guard user.accountType == .driver else { return }
+        guard let location = userLocation.location else { return }
+        Service.shared.updateDriverLocation(location: location)
+    }
+    
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? DriverAnnotation {
