@@ -126,8 +126,10 @@ class HomeController: UIViewController {
             case .requested:
                 break
             case .accepted:
-                print("DEBUG: Trip was accepted..")
                 self.shouldPresentLodingView(false)
+                self.removeAnnotationsAndOverlays()
+                
+                self.zoomForActiveTrip(withDriverUid: driverUid)
 
                 Service.shared.fetchUserData(uid: driverUid, completion: { driver in
                     self.animateRideActionView(shouldShow: true, config: .tripAccepted, user: driver)
@@ -152,11 +154,6 @@ class HomeController: UIViewController {
     }
     
     func fetchDrivers(){
-        guard user?.accountType == .passenger else {
-            print("DEBUG: User account type is \(user?.accountType)")
-            return
-        }
-        
         guard let location = locationManager?.location else { return }
         Service.shared.fetchDrivers(location: location){(driver) in
             guard let coordinate = driver.location?.coordinate else { return }
@@ -167,6 +164,9 @@ class HomeController: UIViewController {
                     guard let driverAnno = annotation as? DriverAnnotation else { return false }
                     if driverAnno.uid == driver.uid {
                         driverAnno.updateAnnotationPosition(withCoodinate: coordinate)
+                        
+                        self.zoomForActiveTrip(withDriverUid: driver.uid)
+                        
                         return true
                     }
                     return false
@@ -390,6 +390,26 @@ private extension HomeController {
         
         print("DEBUG: Did set region \(region)")
     }
+    
+    func zoomForActiveTrip(withDriverUid uid: String){
+        var annotations = [MKAnnotation]()
+
+        self.mapView.annotations.forEach({(annotation) in
+            if let anno = annotation as? DriverAnnotation {
+                if anno.uid == uid {
+                    annotations.append(anno)
+                }
+            }
+
+            if let userAnno = annotation as? MKUserLocation {
+                annotations.append(userAnno)
+            }
+        })
+
+        self.mapView.zoomToFit(annotations: annotations)
+    }
+    
+    
 }
 
 // MARK: - MKMapViewDelegate
