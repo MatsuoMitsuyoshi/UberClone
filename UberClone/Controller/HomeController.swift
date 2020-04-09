@@ -21,6 +21,10 @@ private enum ActionButtonConfiguration {
     }
 }
 
+protocol HomeControllerDelegate: class {
+    func handleMenuToggle()
+}
+
 private enum AnnotationType: String {
     case pickup
     case destination
@@ -44,6 +48,8 @@ class HomeController: UIViewController {
 
     private var actionButtonConfig = ActionButtonConfiguration()
     private var route: MKRoute?
+    
+    weak var delegate: HomeControllerDelegate?
     
     private var user: User? {
         didSet {
@@ -92,21 +98,13 @@ class HomeController: UIViewController {
 //        signOut()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        guard let trip = trip else { return }
-        print("DEBUG: Trip state is \(trip.state)")
-    }
-    
     // MARK: - Selectors
     
     @objc func actionButtonPressed() {
-        print("DEBUG: Handle action button pressed..")
         switch actionButtonConfig {
         case .showMenu:
-            print("DEBUG: Handle show menu..")
+            delegate?.handleMenuToggle()
         case .dismissActionView:
-            print("DEBUG: Handle dismissal..")
-            
             removeAnnotationsAndOverlays()
             mapView.showAnnotations(mapView.annotations, animated: true)
 
