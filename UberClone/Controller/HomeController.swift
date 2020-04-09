@@ -43,23 +43,19 @@ class HomeController: UIViewController {
     private let tableView = UITableView()
     private var searchResults = [MKPlacemark]()
     private final let locationInputViewHeight: CGFloat = 200
-    
     private final let rideActionViewHeight: CGFloat = 300
-
     private var actionButtonConfig = ActionButtonConfiguration()
     private var route: MKRoute?
     
     weak var delegate: HomeControllerDelegate?
     
-    private var user: User? {
+    var user: User? {
         didSet {
             locationInputView.user = user
             if user?.accountType == .passenger {
                 fetchDrivers()
                 configureLocationInputActivationView()
-                
                 observeCurrentTrip()
-                
             } else {
                 observeTrips()
             }
@@ -225,13 +221,6 @@ class HomeController: UIViewController {
     }
     
     // MARK: - Shared API Functions
-
-    func fetchUserData(){
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        Service.shared.fetchUserData(uid: currentUid) { user in
-            self.user = user
-        }
-    }
     
     func checkIfUserIsLoggedIn(){
         if Auth.auth().currentUser?.uid == nil {
@@ -262,7 +251,6 @@ class HomeController: UIViewController {
     
     func configure(){
         configureUI()
-        fetchUserData()
     }
     
     fileprivate func configureActionButton(config: ActionButtonConfiguration) {
@@ -370,7 +358,6 @@ class HomeController: UIViewController {
             if let user = user {
                 rideActionView.user = user
             }
-//            rideActionView.configureUI(withConfig: config)
             rideActionView.config = config
         }
     }
@@ -558,9 +545,7 @@ extension HomeController: LocationInputActivationViewDelegate {
 
 extension HomeController: LocationInputViewDelegate {
     func executeSearch(query: String) {
-//        print("DEBUG: Query text is \(query)")
         searchBy(naturalLanguageQuery: query) { (results) in
-//            print("DEBUG: Placemark is \(results)")
             self.searchResults = results
             self.tableView.reloadData()
         }

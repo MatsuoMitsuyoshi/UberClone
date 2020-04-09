@@ -13,6 +13,15 @@ class MenuController: UITableViewController {
     
     // MARK: - Properties
     
+    var user: User? {
+        didSet {
+//            print("DEBUG: Did set user in menu controller..")
+            guard let user = user else { return }
+            menuHeader.user = user
+        }
+    }
+    
+    
     private lazy var menuHeader: MenuHeader = {
         let frame = CGRect(x: 0, y: 0, width: self.view.frame.width - 80, height: 140)
         let view = MenuHeader(frame: frame)
