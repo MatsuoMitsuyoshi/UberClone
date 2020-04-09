@@ -233,7 +233,7 @@ class RideActionView: UIView {
             }
             
             titleLabel.text = "En Route To Destination"
-//            addressLabel.text = ""
+            addressLabel.text = ""
             
         case .endTrip:
             guard let user = user else { return }
@@ -246,7 +246,7 @@ class RideActionView: UIView {
                 actionButton.setTitle(buttonAction.description, for: .normal)
             }
             
-//            titleLabel.text = "Arrived at Destination"
+            titleLabel.text = "Arrived at Destination"
         }
     }
 }
