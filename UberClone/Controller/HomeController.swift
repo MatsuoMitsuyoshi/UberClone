@@ -142,15 +142,21 @@ class HomeController: UIViewController {
                 })
             case .driverArrived:
                 self.rideActionView.config = .driverArrived
+                self.centerMapOnUserLocation()
 
             case .inProgress:
                 self.rideActionView.config = .tripInProgress
-                
+//                self.zoomForActiveTrip(withDriverUid: driverUid)
+
             case .arrivedAtDestination:
                 self.rideActionView.config = .endTrip
-                
+//                self.centerMapOnUserLocation()
+
             case .completed:
-                break
+                self.animateRideActionView(shouldShow: false)
+                self.centerMapOnUserLocation()
+                self.configureActionButton(config: .showMenu)
+                self.presentAlertController(withTitle: "TRIP COMPLETED", message: "We hope you enjoyed your trip")
             }
         }
     }
@@ -634,6 +640,15 @@ extension HomeController: RideActionViewDelegate {
     
     func pickupPassenger() {
         startTrip()
+    }
+    
+    func dropOffPassenger() {
+        guard let trip = self.trip else { return }
+        Service.shared.updateTripState(trip: trip, state: .completed) { (err, ref) in
+            self.removeAnnotationsAndOverlays()
+            self.centerMapOnUserLocation()
+            self.animateRideActionView(shouldShow: false)
+        }
     }
 }
 
