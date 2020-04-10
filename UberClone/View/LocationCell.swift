@@ -19,11 +19,17 @@ class LocationCell: UITableViewCell {
             addressLabel.text = placemark?.address
         }
     }
+    
+    var type: LocationType? {
+        didSet {
+            titleLabel.text = type?.description
+            addressLabel.text = type?.subtitle
+        }
+    }
 
-    private let titleLabel: UILabel = {
+    var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
-//        label.text = "123 Main Street"
         return label
     }()
     
@@ -31,7 +37,6 @@ class LocationCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .lightGray
-//        label.text = "123 Main Street, Washington, DC"
         return label
     }()
     

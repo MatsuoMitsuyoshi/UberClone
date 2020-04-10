@@ -30,7 +30,7 @@ class LocationInputView: UIView {
         return button
     }()
 
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
 //        label.text = "Kawato Kozo"
         label.textColor = .darkGray
