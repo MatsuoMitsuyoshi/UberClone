@@ -89,9 +89,9 @@ class HomeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        checkIfUserIsLoggedIn()
         enableLocationServices()
-//        signOut()
+
+        configureUI()
     }
     
     // MARK: - Selectors
@@ -219,26 +219,8 @@ class HomeController: UIViewController {
             self.presentAlertController(withTitle: "CANCELLED", message: "The passenger has decided to cancel this ride. Press OK to continue.")
         }
     }
-    
-    // MARK: - Shared API Functions
-    
-    func checkIfUserIsLoggedIn(){
-        if Auth.auth().currentUser?.uid == nil {
-            DispatchQueue.main.async {
-                let nav = UINavigationController(rootViewController: LoginController())
-                nav.modalPresentationStyle = .fullScreen
-                self.present(nav, animated: true, completion: nil)
-            }
-        } else {
-            configure()
-        }
-    }
-    
+        
     // MARK: - Helper Functions
-    
-    func configure(){
-        configureUI()
-    }
     
     fileprivate func configureActionButton(config: ActionButtonConfiguration) {
         switch config {

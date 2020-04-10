@@ -16,7 +16,10 @@ class ContainerController: UIViewController {
     private let homeController = HomeController()
     private var menuController: MenuController!
     private var isExpanded = false
+    private let blackView = UIView()
     
+    private lazy var xOrigin = self.view.frame.width - 80
+
     private var user: User? {
         didSet {
             guard let user = user else { return }
@@ -29,14 +32,37 @@ class ContainerController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .backgroundColor
-        configureHomeController()
-        fetchUserData()
+        checkIfUserIsLoggedIn()
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return isExpanded
+    }
+    
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
     }
     
     // MARK: - Selectors
     
+    @objc func dismissMenu() {
+        isExpanded = false
+        animateMenu(shouldExpand: isExpanded)
+    }
+    
     // MARK: - API
+
+    func checkIfUserIsLoggedIn(){
+        if Auth.auth().currentUser?.uid == nil {
+            DispatchQueue.main.async {
+                let nav = UINavigationController(rootViewController: LoginController())
+                nav.modalPresentationStyle = .fullScreen
+                self.present(nav, animated: true, completion: nil)
+            }
+        } else {
+            configure()
+        }
+    }
 
     func fetchUserData(){
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
@@ -60,6 +86,12 @@ class ContainerController: UIViewController {
 
     // MARK: - Helper Functions
     
+    func configure() {
+        view.backgroundColor = .backgroundColor
+        configureHomeController()
+        fetchUserData()
+    }
+    
     func configureHomeController() {
         addChild(homeController)
         homeController.didMove(toParent: self)
@@ -72,20 +104,41 @@ class ContainerController: UIViewController {
         addChild(menuController)
         menuController.didMove(toParent: self)
         view.insertSubview(menuController.view, at: 0)
-        
         menuController.delegate = self
     }
     
+    func configureBlackView() {
+        blackView.frame = self.view.bounds
+        blackView.backgroundColor = UIColor(white: 0, alpha: 0.5)
+        blackView.alpha = 0
+        view.addSubview(blackView)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissMenu))
+        blackView.addGestureRecognizer(tap)
+    }
+    
     func animateMenu(shouldExpand: Bool, completion: ((Bool) -> Void)? = nil) {
+        
         if shouldExpand {
-            UIView.animate(withDuration: 0.50, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
-                self.homeController.view.frame.origin.x = self.view.frame.width - 80
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                self.homeController.view.frame.origin.x = self.xOrigin
+                self.blackView.alpha = 1
             }, completion: nil)
         } else {
-            UIView.animate(withDuration: 0.50, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            self.blackView.alpha = 0
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
                 self.homeController.view.frame.origin.x = 0
             }, completion: completion)
         }
+        
+        animateStatusBar()
+
+    }
+    
+    func animateStatusBar() {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+            self.setNeedsStatusBarAppearanceUpdate()
+        }, completion: nil)
     }
 }
 
@@ -103,7 +156,6 @@ extension ContainerController: HomeControllerDelegate {
 
 extension ContainerController: MenuControllerDelegate {
     func didSelect(option: MenuOptions) {
-
         isExpanded.toggle()
         animateMenu(shouldExpand: isExpanded) { _ in
             
