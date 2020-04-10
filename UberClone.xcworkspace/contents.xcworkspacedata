@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/mitsu/Library/Mobile Documents/com~apple~CloudDocs/Udemys/iOS_Swift/Ubder Clone App/UberClone/UberClone/Model/Trip.swift">
+   </FileRef>
+   <FileRef
       location = "group:UberClone.xcodeproj">
    </FileRef>
    <FileRef

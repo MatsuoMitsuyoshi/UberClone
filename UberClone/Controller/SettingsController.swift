@@ -34,6 +34,8 @@ class SettingsController: UITableViewController {
     // MARK: - Properties
     
     var user: User
+    private let lacationManager = LocationHandler.shared.locationManager
+    
 
     private lazy var infoHeader: UserInfoHeader = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 100)
@@ -72,6 +74,7 @@ class SettingsController: UITableViewController {
         tableView.backgroundColor = .white
         
         tableView.tableHeaderView = infoHeader
+        tableView.tableFooterView = UIView()
     }
     
     func configureNavigationBar() {
@@ -95,14 +98,12 @@ extension SettingsController {
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()
         view.backgroundColor = .backgroundColor
-
         let title = UILabel()
         title.font = UIFont.systemFont(ofSize: 16)
         title.textColor = .white
         title.text = "Favorites"
         view.addSubview(title)
         title.centerY(inView: view, leftAnchor: view.leftAnchor, paddingLeft: 16)
-
         return view
     }
 
@@ -112,16 +113,22 @@ extension SettingsController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! LocationCell
-        
         guard let type = LocationType(rawValue: indexPath.row) else { return cell }
-
         cell.type = type
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let type = LocationType(rawValue: indexPath.row) else { return }
+        
         print("DEBUG: Type is \(type.description)")
+        
+        guard let location = lacationManager?.location else { return }
+        let controller = AddLocationController(type: type, location: location)
+        
+        let nav = UINavigationController(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
     }
 }
     
