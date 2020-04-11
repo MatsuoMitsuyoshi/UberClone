@@ -17,7 +17,10 @@ class AddLocationController: UITableViewController {
 
     private let searchBar = UISearchBar()
     private let searchCompleter = MKLocalSearchCompleter()
-    private var searchResults = [MKLocalSearchCompletion]()
+    
+    private var searchResults = [MKLocalSearchCompletion]() {
+        didSet { tableView.reloadData() }
+    }
     
     private let type: LocationType
     private let location: CLLocation
@@ -38,11 +41,7 @@ class AddLocationController: UITableViewController {
     override func viewDidLoad() {
         configureTableView()
         configureSearchBar()
-        
         configureSearchCompleter()
-        
-        print("DEBUG: Type is \(type.description)")
-        print("DEBUG: Location is \(location)")
     }
 
     // MARK: - Helper Functions
@@ -51,7 +50,6 @@ class AddLocationController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.rowHeight = 60
-        
         tableView.addShadow()
     }
     
@@ -68,6 +66,8 @@ class AddLocationController: UITableViewController {
     }
 }
 
+// MARK: - UITableViewDelegate/DataSource
+
 extension AddLocationController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchResults.count
@@ -75,15 +75,26 @@ extension AddLocationController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        let result = searchResults[indexPath.row]
+        cell.textLabel?.text = result.title
+        cell.detailTextLabel?.text = result.subtitle
         return cell
     }
 }
 
+// MARK: - UISearchBarDelegate
+
 extension AddLocationController: UISearchBarDelegate {
-    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        searchCompleter.queryFragment = searchText
+    }
 }
 
+// MARK: - MKLocalSearchCompleterDelegate
+
 extension AddLocationController: MKLocalSearchCompleterDelegate {
-    
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        searchResults = completer.results
+    }
 }
 
