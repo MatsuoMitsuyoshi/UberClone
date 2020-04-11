@@ -120,15 +120,24 @@ extension SettingsController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let type = LocationType(rawValue: indexPath.row) else { return }
-        
-        print("DEBUG: Type is \(type.description)")
-        
         guard let location = lacationManager?.location else { return }
         let controller = AddLocationController(type: type, location: location)
+        
+        controller.delegate = self
         
         let nav = UINavigationController(rootViewController: controller)
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true, completion: nil)
     }
 }
-    
+
+// MARK: - AddLocationControllerDelegate
+
+extension SettingsController: AddLocationControllerDelegate {
+    func updateLocation(locationString: String, type: LocationType) {
+        
+        PassengerService.shared.saveLocation(locationString: locationString, type: type) {(err, ref) in
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+}
