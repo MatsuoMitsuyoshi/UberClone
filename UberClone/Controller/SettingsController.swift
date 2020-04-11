@@ -36,7 +36,6 @@ class SettingsController: UITableViewController {
     var user: User
     private let lacationManager = LocationHandler.shared.locationManager
     
-
     private lazy var infoHeader: UserInfoHeader = {
         let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 100)
         let view = UserInfoHeader(user: user, frame: frame)
@@ -67,6 +66,15 @@ class SettingsController: UITableViewController {
     }
 
     // MARK: - Helper Functions
+    
+    func locationText(forType type: LocationType) -> String {
+        switch type {
+        case .home:
+            return user.homeLocation ?? type.subtitle
+        case .work:
+            return user.workLocation ?? type.subtitle
+        }
+    }
     
     func configureTableView() {
         tableView.rowHeight = 60
@@ -114,7 +122,10 @@ extension SettingsController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! LocationCell
         guard let type = LocationType(rawValue: indexPath.row) else { return cell }
-        cell.type = type
+        
+        cell.titleLabel.text = type.description
+        cell.addressLabel.text = locationText(forType: type)
+        
         return cell
     }
     
@@ -138,6 +149,16 @@ extension SettingsController: AddLocationControllerDelegate {
         
         PassengerService.shared.saveLocation(locationString: locationString, type: type) {(err, ref) in
             self.dismiss(animated: true, completion: nil)
+
+            switch type {
+            case .home:
+                self.user.homeLocation = locationString
+            case .work:
+                self.user.workLocation = locationString
+            
+            }
+            
+            self.tableView.reloadData()
         }
     }
 }
