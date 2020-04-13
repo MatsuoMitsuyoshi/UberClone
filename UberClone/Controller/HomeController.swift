@@ -21,13 +21,13 @@ private enum ActionButtonConfiguration {
     }
 }
 
-protocol HomeControllerDelegate: class {
-    func handleMenuToggle()
-}
-
 private enum AnnotationType: String {
     case pickup
     case destination
+}
+
+protocol HomeControllerDelegate: class {
+    func handleMenuToggle()
 }
 
 class HomeController: UIViewController {
@@ -49,23 +49,22 @@ class HomeController: UIViewController {
     private var route: MKRoute?
     
     weak var delegate: HomeControllerDelegate?
-    
+
     var user: User? {
         didSet {
             locationInputView.user = user
+            
             if user?.accountType == .passenger {
                 fetchDrivers()
                 configureLocationInputActivationView()
                 observeCurrentTrip()
-                
                 configureSavedUserLocations()
-                
             } else {
                 observeTrips()
             }
         }
     }
-    
+
     private var trip: Trip? {
         didSet {
             guard let user = user else { return }
@@ -238,6 +237,7 @@ class HomeController: UIViewController {
     
     func configureSavedUserLocations() {
         guard let user = user else { return }
+        savedLocations.removeAll()
         
         if let homeLocation = user.homeLocation {
             geocodeAddressString(address: homeLocation)
@@ -250,25 +250,25 @@ class HomeController: UIViewController {
     
     func geocodeAddressString(address: String) {
         let geocoder = CLGeocoder()
-        geocoder.geocodeAddressString(address) {(placemarks, error) in
+        geocoder.geocodeAddressString(address) { (placemarks, error) in
             guard let clPlacemark = placemarks?.first else { return }
             let placemark = MKPlacemark(placemark: clPlacemark)
             self.savedLocations.append(placemark)
             self.tableView.reloadData()
         }
     }
-    
-    func configureUI(){
+
+    func configureUI() {
         configureMapView()
-        
         configureRideActionView()
         
         view.addSubview(actionButton)
-        actionButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, paddingTop: 16, paddingLeft: 20, width: 30, height: 30)
+        actionButton.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor,
+                            paddingTop: 16, paddingLeft: 20, width: 30, height: 30)
         
         configureTableView()
     }
-    
+
     func configureLocationInputActivationView(){
         view.addSubview(inputActivationView)
         inputActivationView.centerX(inView: view)
@@ -573,30 +573,33 @@ extension HomeController: UITableViewDelegate, UITableViewDataSource {
         
         if indexPath.section == 0 {
             cell.placemark = savedLocations[indexPath.row]
+            print("DEBUG: Saved location is \(savedLocations[indexPath.row])")
+            }
+            
+            if indexPath.section == 1 {
+                cell.placemark = searchResults[indexPath.row]
+            }
+            
+            return cell
         }
-        
-        if indexPath.section == 1 {
-            cell.placemark = searchResults[indexPath.row]
-        }
-        return cell
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedPlacemark = searchResults[indexPath.row]
+
+        let selectedPlacemark = indexPath.section == 0 ? savedLocations[indexPath.row] : searchResults[indexPath.row]
         
         configureActionButton(config: .dismissActionView)
         
         let destination = MKMapItem(placemark: selectedPlacemark)
         generatePolyline(toDestination: destination)
-
+        
         dismissLocationView { _ in
-            
             self.mapView.addAnnotationAndSelect(forCoordinate: selectedPlacemark.coordinate)
             
-            let annotations = self.mapView.annotations.filter({ !$0.isKind(of: DriverAnnotation.self)})
+            let annotations = self.mapView.annotations.filter({ !$0.isKind(of: DriverAnnotation.self) })
             self.mapView.zoomToFit(annotations: annotations)
             
-            self.animateRideActionView(shouldShow: true, destination: selectedPlacemark, config: .requestRide)
+            self.animateRideActionView(shouldShow: true, destination: selectedPlacemark,
+                                       config: .requestRide)
         }
     }
 }

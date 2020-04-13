@@ -20,17 +20,13 @@ class AddLocationController: UITableViewController {
     // MARK: - Properties
     
     weak var delegate: AddLocationControllerDelegate?
-
     private let searchBar = UISearchBar()
     private let searchCompleter = MKLocalSearchCompleter()
-    
     private var searchResults = [MKLocalSearchCompletion]() {
         didSet { tableView.reloadData() }
     }
-    
     private let type: LocationType
     private let location: CLLocation
-
     
     // MARK: - Lifecycle
     
@@ -49,13 +45,14 @@ class AddLocationController: UITableViewController {
         configureSearchBar()
         configureSearchCompleter()
     }
-
+    
     // MARK: - Helper Functions
-
+    
     func configureTableView() {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.tableFooterView = UIView()
         tableView.rowHeight = 60
+        
         tableView.addShadow()
     }
     
@@ -112,4 +109,3 @@ extension AddLocationController: MKLocalSearchCompleterDelegate {
         searchResults = completer.results
     }
 }
-
