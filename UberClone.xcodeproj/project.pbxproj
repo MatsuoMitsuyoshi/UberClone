@@ -26,6 +26,7 @@
 		095CA797243BCE6400A11EB5 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095CA796243BCE6400A11EB5 /* Trip.swift */; };
 		095CA799243BEAA500A11EB5 /* PickupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 095CA798243BEAA500A11EB5 /* PickupController.swift */; };
 		0968062E2428B8830038772C /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0968062D2428B8830038772C /* SignUpController.swift */; };
+		09C7F9D224451854007DF2BC /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09C7F9D124451854007DF2BC /* CircularProgressView.swift */; };
 		09DA083C242771FF00B7F60F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA083B242771FF00B7F60F /* AppDelegate.swift */; };
 		09DA083E242771FF00B7F60F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA083D242771FF00B7F60F /* SceneDelegate.swift */; };
 		09DA0843242771FF00B7F60F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 09DA0841242771FF00B7F60F /* Main.storyboard */; };
@@ -57,6 +58,7 @@
 		095CA796243BCE6400A11EB5 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Trip.swift; path = "/Users/mitsu/Library/Mobile Documents/com~apple~CloudDocs/Udemys/iOS_Swift/Ubder Clone App/UberClone/UberClone/Model/Trip.swift"; sourceTree = "<absolute>"; };
 		095CA798243BEAA500A11EB5 /* PickupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupController.swift; sourceTree = "<group>"; };
 		0968062D2428B8830038772C /* SignUpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
+		09C7F9D124451854007DF2BC /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		09DA0838242771FF00B7F60F /* UberClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UberClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09DA083B242771FF00B7F60F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		09DA083D242771FF00B7F60F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				095CA794243B37F800A11EB5 /* RideActionView.swift */,
 				093C692F243F1DA6006C319A /* MenuHeader.swift */,
 				093C693324402B6E006C319A /* UserInfoHeader.swift */,
+				09C7F9D124451854007DF2BC /* CircularProgressView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -336,6 +339,7 @@
 				095CA799243BEAA500A11EB5 /* PickupController.swift in Sources */,
 				095CA7932439138F00A11EB5 /* DriverAnnotation.swift in Sources */,
 				09DA085724278F9100B7F60F /* Extensions.swift in Sources */,
+				09C7F9D224451854007DF2BC /* CircularProgressView.swift in Sources */,
 				09DA085524277A4B00B7F60F /* LoginController.swift in Sources */,
 				093C69362441193A006C319A /* AddLocationController.swift in Sources */,
 				095CA78B2437BD3900A11EB5 /* LocationCell.swift in Sources */,
