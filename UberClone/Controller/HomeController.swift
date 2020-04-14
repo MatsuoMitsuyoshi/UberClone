@@ -127,8 +127,19 @@ class HomeController: UIViewController {
             case .requested:
                 break
                 
+            case .denied:
+                self.shouldPresentLoadingView(false)
+                self.presentAlertController(withTitle: "Oops",
+                                            message: "It looks like we couldnt find you a driver. Please try again..")
+                PassengerService.shared.deleteTrip { (err, ref) in
+                    self.centerMapOnUserLocation()
+                    self.configureActionButton(config: .showMenu)
+                    self.inputActivationView.alpha = 1
+                    self.removeAnnotationsAndOverlays()
+                }
+            
             case .accepted:
-                self.shouldPresentLodingView(false)
+                self.shouldPresentLoadingView(false)
                 self.removeAnnotationsAndOverlays()
                 
                 self.zoomForActiveTrip(withDriverUid: driverUid)
@@ -611,7 +622,7 @@ extension HomeController: RideActionViewDelegate {
         guard let pickupCoordinates = locationManager?.location?.coordinate else { return }
         guard let destinationCoordinates = view.destination?.coordinate else { return }
         
-        shouldPresentLodingView(true, message: "Finding you a ride..")
+        shouldPresentLoadingView(true, message: "Finding you a ride..")
         
         PassengerService.shared.uploadTrip(pickupCoordinates, destinationCoordinates) {(err, ref) in
             if let error = err {

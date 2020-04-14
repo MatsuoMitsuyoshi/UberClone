@@ -181,7 +181,7 @@ extension UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func shouldPresentLodingView(_ present: Bool, message: String? = nil){
+    func shouldPresentLoadingView(_ present: Bool, message: String? = nil){
         if present {
             let loadingView = UIView()
             loadingView.frame = self.view.frame
