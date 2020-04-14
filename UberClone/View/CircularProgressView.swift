@@ -30,14 +30,14 @@ class CircularProgressView: UIView {
     // MARK: - Helper Functions
     
     private func configureCirlceLayers() {
-        pulsatingLayer = circleShapeLayer(strokeColor: .clear, fillColor: .blue)
+        pulsatingLayer = circleShapeLayer(strokeColor: .clear, fillColor: .pulsatingFillColor)
         layer.addSublayer(pulsatingLayer)
         
-        trackLayer = circleShapeLayer(strokeColor: .clear, fillColor: .clear)
+        trackLayer = circleShapeLayer(strokeColor: .trackStrokeColor, fillColor: .clear)
         layer.addSublayer(trackLayer)
         trackLayer.strokeEnd = 1
 
-        progressLayer = circleShapeLayer(strokeColor: .systemPink, fillColor: .clear)
+        progressLayer = circleShapeLayer(strokeColor: .outlineStrokeColor, fillColor: .clear)
         layer.addSublayer(progressLayer)
         progressLayer.strokeEnd = 1
     }

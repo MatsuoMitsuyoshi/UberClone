@@ -85,7 +85,6 @@ class PickupController: UIViewController {
     // MARK: - Selectors
     
     @objc func handleAcceptTrip(){
-        print("DEBUG: Accept trip here..")
         DriverService.shared.acceptTrip(trip: trip) { (error, ref) in
             self.delegate?.didAcceptTrip(self.trip)
         }
@@ -95,9 +94,9 @@ class PickupController: UIViewController {
         circularProgressView.animatePulsatingLayer()
         circularProgressView.setProgressWithAnimation(duration: 10, value: 0) {
             
-            DriverService.shared.updateTripState(trip: self.trip, state: .denied) { (err, ref) in
-                self.dismiss(animated: true, completion: nil)
-            }
+//            DriverService.shared.updateTripState(trip: self.trip, state: .denied) { (err, ref) in
+//                self.dismiss(animated: true, completion: nil)
+//            }
         }
     }
     

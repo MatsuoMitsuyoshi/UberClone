@@ -104,6 +104,15 @@
 			path = SideMenu;
 			sourceTree = "<group>";
 		};
+		09C7F9D3244548AC007DF2BC /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				093C693124401BE3006C319A /* SettingsController.swift */,
+				093C693524411939006C319A /* AddLocationController.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		09DA082F242771FF00B7F60F = {
 			isa = PBXGroup;
 			children = (
@@ -161,12 +170,11 @@
 		09DA085124277A0100B7F60F /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				09C7F9D3244548AC007DF2BC /* Settings */,
 				093C692A243F0638006C319A /* SideMenu */,
 				093C6929243F05FB006C319A /* Authentication */,
 				095CA7842436B87000A11EB5 /* HomeController.swift */,
 				095CA798243BEAA500A11EB5 /* PickupController.swift */,
-				093C693124401BE3006C319A /* SettingsController.swift */,
-				093C693524411939006C319A /* AddLocationController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";

@@ -673,7 +673,7 @@ extension HomeController: PickupControllerDelegate {
     func didAcceptTrip(_ trip: Trip) {
         self.trip = trip
         
-        mapView.addAnnotationAndSelect(forCoordinate: trip.pickupCoordinates)
+        self.mapView.addAnnotationAndSelect(forCoordinate: trip.pickupCoordinates)
 
         setCustomRegion(withType: .pickup, coordinates: trip.pickupCoordinates)
 

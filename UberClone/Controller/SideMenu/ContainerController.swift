@@ -24,8 +24,6 @@ class ContainerController: UIViewController {
         didSet {
             guard let user = user else { return }
             
-            print("DEBUG: User home location is \(user.homeLocation)")
-            
             homeController.user = user
             configureMenuController(withUser: user)
         }
@@ -57,11 +55,12 @@ class ContainerController: UIViewController {
 
     func checkIfUserIsLoggedIn(){
         if Auth.auth().currentUser?.uid == nil {
-            DispatchQueue.main.async {
-                let nav = UINavigationController(rootViewController: LoginController())
-                nav.modalPresentationStyle = .fullScreen
-                self.present(nav, animated: true, completion: nil)
-            }
+            presentLoginController()
+//            DispatchQueue.main.async {
+//                let nav = UINavigationController(rootViewController: LoginController())
+//                nav.modalPresentationStyle = .fullScreen
+//                self.present(nav, animated: true, completion: nil)
+//            }
         } else {
             configure()
         }
@@ -77,11 +76,12 @@ class ContainerController: UIViewController {
     func signOut(){
         do {
             try Auth.auth().signOut()
-            DispatchQueue.main.async {
-                let nav = UINavigationController(rootViewController: LoginController())
-                nav.modalPresentationStyle = .fullScreen
-                self.present(nav, animated: true, completion: nil)
-            }
+            presentLoginController()
+//            DispatchQueue.main.async {
+//                let nav = UINavigationController(rootViewController: LoginController())
+//                nav.modalPresentationStyle = .fullScreen
+//                self.present(nav, animated: true, completion: nil)
+//            }
         } catch {
             print("DEBUG: Error signing out")
         }
@@ -89,6 +89,17 @@ class ContainerController: UIViewController {
 
     // MARK: - Helper Functions
     
+    func presentLoginController() {
+        DispatchQueue.main.async {
+            let nav = UINavigationController(rootViewController: LoginController())
+            if #available(iOS 13.0, *) {
+                nav.isModalInPresentation = true
+            }
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
+        }
+    }
+
     func configure() {
         view.backgroundColor = .backgroundColor
         configureHomeController()
